@@ -5,7 +5,9 @@ if len(sys.argv) > 1:
 else:
     file_name = "wmap.txt"
 
+undo_buf_len = 1000
 wmap = {}
+undo_buf = []
     
 def get_at(x, y):
     if (x, y) in wmap:
@@ -47,6 +49,10 @@ def tick():
                 nwmap[pos] = 1
             else:
                 nwmap[pos] = 3
+
+    while len(undo_buf) > undo_buf_len:
+        undo_buf.pop(0)
+    undo_buf.append(wmap)
 
     wmap = nwmap
 
@@ -109,6 +115,11 @@ def save():
 
     with open("dmap.txt", "w") as file:
         file.write("\n".join(clines))
+
+def undo():
+    global wmap
+    if len(undo_buf) > 0:
+        wmap = undo_buf.pop()
 
 with open(file_name) as file:
     c2n = {"@": 1, "*": 2, "O": 3}

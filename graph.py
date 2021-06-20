@@ -57,6 +57,8 @@ while True:
                 SPEED *= 3
             elif event.key == pygame.K_c:
                 save()
+            elif event.key == pygame.K_r:
+                undo()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_e:
                 keys["e"] = False
