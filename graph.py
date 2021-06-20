@@ -24,23 +24,27 @@ clock = pygame.time.Clock()
 
 paused = True
 speed = False
+stepping = False
 
-keys = {"w": False, "s": False, "a": False, "d": False}
+keys = {"e": False, "w": False, "s": False, "a": False, "d": False}
 gx, gy = 0, 0
 SPEED = 5
 next_table = (2, 3, 1)
+e_to = 0
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit(0)
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_e:
+            if event.key == pygame.K_SPACE:
                 paused = not paused
             elif event.key == pygame.K_q:
                 speed = not speed
             elif event.key == pygame.K_ESCAPE:
                 exit(0)
+            elif event.key == pygame.K_e:
+                keys["e"] = True
             elif event.key == pygame.K_w:
                 keys["w"] = True
             elif event.key == pygame.K_s:
@@ -54,7 +58,9 @@ while True:
             elif event.key == pygame.K_c:
                 save()
         elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
+            if event.key == pygame.K_e:
+                keys["e"] = False
+            elif event.key == pygame.K_w:
                 keys["w"] = False
             elif event.key == pygame.K_s:
                 keys["s"] = False
@@ -91,6 +97,15 @@ while True:
             elif tile_size > 100:
                 tile_size = 100
 
+    if keys["e"]:
+        stepping = True
+        paused = False
+        speed = False
+    elif e_to:
+        stepping = False
+        paused = True
+        speed = False
+
     if keys["w"]:
         gy -= SPEED
     if keys["s"]:
@@ -99,6 +114,18 @@ while True:
         gx -= SPEED
     if keys["d"]:
         gx += SPEED
+
+    if stepping:
+        e_to += 1
+
+        if e_to == 1:
+            paused = False
+        elif e_to < 20:
+            paused = True
+        else:
+            paused = False
+    else:
+        e_to = 0
 
     if not paused:
         tick()
