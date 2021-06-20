@@ -2,6 +2,8 @@ import pygame, random
 from ww import *
 
 pygame.init()
+pygame.font.init()
+font = pygame.font.SysFont('Roboto', 16)
 
 height, width = pygame.display.Info().current_h, pygame.display.Info().current_w
 tile_size = 5
@@ -25,9 +27,10 @@ clock = pygame.time.Clock()
 paused = True
 speed = False
 stepping = False
+gui = True
 
 keys = {"e": False, "w": False, "s": False, "a": False, "d": False}
-gx, gy = 0, 0
+gx, gy = -100, -100
 SPEED = 5
 next_table = (2, 3, 1)
 e_to = 0
@@ -59,6 +62,8 @@ while True:
                 save()
             elif event.key == pygame.K_r:
                 undo()
+            elif event.key == pygame.K_F1:
+                gui = not gui
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_e:
                 keys["e"] = False
@@ -140,6 +145,16 @@ while True:
             for oy in range(0, tile_size):
                 for ox in range(0, tile_size):
                     screen.set_at((ex + ox, ey + oy), colors[val])
+
+    if gui:
+        screen.blit(font.render(f"FPS: {clock.get_fps() * 10 // 1 / 10}", True, (255, 255, 255)), (0, 0))
+        screen.blit(font.render(f"Pos: {(gx + width // 2) // tile_size} {(gy + height // 2) // tile_size}", True, (255, 255, 255)), (0, 16))
+
+        for y in range(height // 2 - 5, height // 2 + 6):
+            screen.set_at((width // 2, y), (127, 127, 127))
+
+        for x in range(width // 2 - 5, width // 2 + 6):
+                screen.set_at((x, height // 2), (127, 127, 127))
 
     pygame.display.flip()
 
